@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Команда 15 — Анализ данных олимпиады «Изумруд»</title>
+  <meta name="description" content="Команда 15 — анализ данных олимпиады «Изумруд»: состав команды, инструменты Python, Pandas, статистика и визуализации.">
+  <link rel="canonical" href="https://mrmalakhovdmitri.github.io/DANO/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:url" content="https://mrmalakhovdmitri.github.io/DANO/">
+  <meta property="og:site_name" content="DANO — Команда 15">
+  <meta property="og:title" content="Команда 15 — Анализ данных олимпиады «Изумруд»">
+  <meta property="og:description" content="Состав команды, инструменты и подход к анализу данных: Python, Pandas, statsmodels, seaborn, numpy, matplotlib.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Команда 15 — Анализ данных олимпиады «Изумруд»">
+  <meta name="twitter:description" content="Состав команды, инструменты и подход к анализу данных олимпиады «Изумруд».">
+  <meta name="theme-color" content="#FFDD2D">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: "T Sans";
+      src: url("./T-Sans_Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --page: #FFFFFF;
+      --grid-line: #EDEDED;
+      --surface: #FFFFFF;
+      --surface-soft: #F9F9F9;
+      --accent: #FFDD2D;
+      --accent-hover: #FFB124;
+      --soft: #FFF7CF;
+      --soft-2: #FFEE96;
+      --ink: #333333;
+      --ink-2: #3F3F3F;
+      --muted: #6C6C6C;
+      --line-strong: #333333;
+      --line-soft: #E1E1E1;
+    }
+    body {
+      font-family: "T Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--ink);
+      background-color: var(--page);
+      background-image:
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      overflow-x: clip;
+    }
+    img, svg { max-width: 100%; }
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+    body { position: relative; }
+    .press-start-2p-regular, h1, h2 {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.4;
+      text-wrap: balance;
+      overflow-wrap: break-word;
+    }
+    h1 { font-size: clamp(1.25rem, 4vw, 2rem); }
+    h2 { font-size: clamp(0.95rem, 2.6vw, 1.25rem); }
+    p, li, a, .card-text, .lead { font-family: "T Sans", system-ui, sans-serif; }
+    .lead { font-size: 1.2rem; color: var(--ink-2); }
+
+    #nav { background-color: #FFFFFF; border-bottom: 1px solid var(--line-strong); }
+    main section { scroll-margin-top: 72px; }
+    #nav .navbar-brand, #nav .nav-link { color: #141414; }
+    #nav .nav-link { padding: 0.4em 0.8em; }
+    #nav .nav-link:hover { background-color: var(--soft); text-decoration: none; }
+    #nav .nav-link.active { background-color: var(--accent); }
+
+    .hero { position: relative; overflow: hidden; background-color: var(--accent); border-bottom: 1px solid var(--line-strong); color: var(--ink); }
+    .hero .lead { color: var(--ink-2); }
+
+    .title-plaque {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      padding: 0.7em 1em;
+    }
+    .title-marker { width: 64px; height: 8px; background: var(--accent); margin-top: 12px; }
+
+    main { position: relative; }
+    main section { position: relative; z-index: 1; }
+    .rail { position: absolute; top: 16px; width: 140px; height: 640px; z-index: 0; pointer-events: none; }
+    .rail-left { left: max(0px, calc((100% - 1320px) / 2)); }
+    .rail-right { right: max(0px, calc((100% - 1320px) / 2)); transform: scaleX(-1); }
+    .rail svg { width: 100%; height: 100%; display: block; }
+    .hero-corner { position: absolute; top: 0; width: 120px; height: 120px; pointer-events: none; }
+    .hero-corner-left { left: 0; }
+    .hero-corner-right { right: 0; transform: scaleX(-1); }
+    .circuit-divider { height: 70px; padding: 0; }
+    .circuit-divider svg { width: 100%; height: 70px; display: block; }
+    @media (max-width: 991.98px) { .rail { display: none; } }
+    @media (max-width: 575.98px) { .hero-corner { width: 84px; height: 84px; } }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      border-radius: 0;
+      box-shadow: none;
+      text-align: center;
+      padding: 24px 20px;
+      transition: transform 0.18s ease-out;
+      will-change: transform;
+    }
+    .team-card:focus-within { transform: translateY(-4px); }
+    .avatar-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid var(--line-strong);
+      overflow: hidden;
+    }
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 50%;
+      display: block;
+    }
+    .avatar-wrap img.avatar-zoom {
+      transform: scale(1.15);
+    }
+    /* Состояние битой картинки выставляется из JS (без inline onerror для CSP). */
+    .avatar-wrap img.is-broken { display: none; }
+    .avatar-wrap.is-broken .avatar-fallback { display: flex; }
+    .avatar-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: var(--soft-2);
+      color: var(--ink);
+      font-size: 1.6rem;
+      border-radius: 50%;
+    }
+    .member-name {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--ink);
+      margin-bottom: 0.6em;
+      text-wrap: balance;
+      overflow-wrap: break-word;
+    }
+    .member-role { font-size: 0.98rem; line-height: 1.5; color: var(--muted); margin-bottom: 0; }
+
+    .avatar-wrap img { transition: transform 0.3s ease; }
+    .team-card:hover .avatar-wrap img { transform: scale(1.07); }
+    .team-card:hover .avatar-wrap img.avatar-zoom { transform: scale(1.22); }
+    .chip { transition: transform 0.2s ease, background-color 0.2s ease; }
+    .chip:hover { transform: translateY(-2px); background-color: var(--soft-2); }
+    .rail circle, .circuit-divider circle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: dot-pulse 2.6s ease-in-out infinite;
+    }
+    @keyframes dot-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    .tools-panel { background: var(--surface); border: 1px solid var(--line-strong); padding: 24px; }
+    .tools-panel p { color: var(--ink-2); }
+    .chip-list { list-style: none; padding: 0; margin: 1em 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
+    .chip {
+      background: var(--soft);
+      border: 1px solid var(--line-strong);
+      border-radius: 0;
+      padding: 0.5em 1em;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+    .chip strong { font-weight: 400; }
+
+    footer { background-color: #333333; color: #FFFFFF; padding: 0; }
+    footer a { color: var(--accent); }
+    footer .container { padding-top: 0; padding-bottom: 0; }
+    .hack-line { display: flex; align-items: center; justify-content: space-between; gap: 0.5em; margin: 0; padding: 0.35em 0; font-family: "Press Start 2P", system-ui, sans-serif; font-size: clamp(2.2rem, 10vw, 6rem); color: #FFFFFF; line-height: 1; flex-wrap: wrap; }
+    .hack-text { color: var(--accent); }
+    .hack-on { display: flex; align-items: center; gap: 0.5em; white-space: nowrap; flex: none; }
+    .hack-toggle { font-size: inherit; width: 2.2em; height: 1.1em; flex: none; border: 0.08em solid var(--accent); border-radius: 999px; background: transparent; position: relative; cursor: pointer; padding: 0; }
+    .hack-knob { position: absolute; top: 50%; left: 0.12em; width: 0.68em; height: 0.68em; border-radius: 50%; background: #FFFFFF; transform: translate(0, -50%); transition: transform 0.25s ease; }
+    .hack-toggle.is-on .hack-knob { transform: translate(1.12em, -50%); }
+    .hack-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    :focus-visible { outline: 3px solid #141414; outline-offset: 2px; }
+    .hero :focus-visible { outline-color: #333333; }
+    footer :focus-visible { outline-color: #FFDD2D; }
+
+    @media (max-width: 575.98px) {
+      body { background-size: 32px 32px; }
+      h1 { font-size: clamp(1.05rem, 6vw, 1.35rem); line-height: 1.6; }
+      h2 { font-size: clamp(0.8rem, 4.5vw, 1rem); line-height: 1.6; }
+      .lead { font-size: 1.05rem; }
+      .hero .container { position: relative; z-index: 1; padding-left: 1.25rem; padding-right: 1.25rem; }
+      .hero-corner { width: 64px; height: 64px; opacity: 0.9; }
+      .avatar-wrap { width: 96px; height: 96px; }
+      .tools-panel { padding: 20px 16px; }
+      .chip-list { gap: 8px; }
+      .chip { font-size: 0.9rem; padding: 0.45em 0.8em; }
+      .circuit-divider { height: 44px; }
+      .circuit-divider svg { height: 44px; }
+      html { scroll-padding-top: 64px; }
+      main section { scroll-margin-top: 64px; }
+      .hack-line { font-size: clamp(1.4rem, 11vw, 2.2rem); flex-direction: column; align-items: flex-start; }
+      .navbar-toggler { min-width: 44px; min-height: 44px; }
+      #nav .nav-link { padding: 0.7em 0.8em; }
+    }
+    /* Тач-экраны: tilt только для мыши, иначе jank при скролле + лишний расход GPU. */
+    @media (hover: none), (pointer: coarse) {
+      .team-card { will-change: auto; }
+    }
+  </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#nav" data-bs-smooth-scroll="true" tabindex="0">
+
+<nav class="navbar navbar-expand-lg sticky-top" id="nav" aria-label="Основная навигация">
+  <div class="container">
+    <a class="navbar-brand press-start-2p-regular" href="#">DANO</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Открыть меню">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#team">Участники</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#tools">Инструменты</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="text-center py-5 hero">
+  <svg class="hero-corner hero-corner-left" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+    <path d="M34 24 V64 Q34 86 56 86 H120" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="34" cy="14" r="8" fill="#FFFFFF" stroke="#333333" stroke-width="3"/>
+  </svg>
+  <svg class="hero-corner hero-corner-right" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+    <path d="M34 24 V64 Q34 86 56 86 H120" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="34" cy="14" r="8" fill="#FFFFFF" stroke="#333333" stroke-width="3"/>
+  </svg>
+  <div class="container">
+    <h1>Команда 15</h1>
+    <p class="lead mb-0">Анализ данных олимпиады «Изумруд»</p>
+  </div>
+</header>
+
+<main>
+  <div class="rail rail-left" aria-hidden="true">
+    <svg viewBox="0 0 140 640" focusable="false">
+      <path d="M70 24 V82 Q70 114 102 114 H140" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="70" cy="14" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+      <path d="M0 200 H54 Q94 200 94 240 V278" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="94" cy="292" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+      <path d="M0 430 H54 Q94 430 94 470 V556" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="94" cy="570" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+    </svg>
+  </div>
+  <div class="rail rail-right" aria-hidden="true">
+    <svg viewBox="0 0 140 640" focusable="false">
+      <path d="M70 24 V82 Q70 114 102 114 H140" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="70" cy="14" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+      <path d="M0 200 H54 Q94 200 94 240 V278" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="94" cy="292" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+      <path d="M0 430 H54 Q94 430 94 470 V556" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="94" cy="570" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+    </svg>
+  </div>
+  <section class="container py-5" id="team" aria-labelledby="team-title">
+    <h2 class="mb-4 title-plaque" id="team-title">Команда проекта</h2>
+    <div class="title-marker mb-5" aria-hidden="true"></div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 justify-content-center">
+      <div class="col">
+        <div class="card h-100 team-card">
+          <div class="card-body">
+            <div class="avatar-wrap">
+              <img src="mascots/raven-graduate.png" alt="Маскот ворон-выпускник — фото Алёны Сазоновой" loading="lazy" decoding="async" width="240" height="240">
+              <span class="avatar-fallback" aria-hidden="true">АС</span>
+            </div>
+            <h3 class="card-title member-name">Алёна Сазонова</h3>
+            <p class="card-text member-role">Разработка сайта, подготовка презентации и теоретической части.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 team-card">
+          <div class="card-body">
+            <div class="avatar-wrap">
+              <img src="mascots/capybara-glasses.png" alt="Маскот капибара в очках — фото Дмитрия Малахова" loading="lazy" decoding="async" width="240" height="240">
+              <span class="avatar-fallback" aria-hidden="true">ДМ</span>
+            </div>
+            <h3 class="card-title member-name">Дмитрий Малахов</h3>
+            <p class="card-text member-role">Дизайн презентации и оформление сайта.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 team-card">
+          <div class="card-body">
+            <div class="avatar-wrap">
+              <img src="mascots/axolotl-glasses.png" alt="Маскот аксолотль в очках — фото Сергея Режешевского" loading="lazy" decoding="async" width="240" height="240">
+              <span class="avatar-fallback" aria-hidden="true">СР</span>
+            </div>
+            <h3 class="card-title member-name">Сергей Режешевский</h3>
+            <p class="card-text member-role">Разработка структуры проекта и моделей.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 team-card">
+          <div class="card-body">
+            <div class="avatar-wrap">
+              <img src="mascots/beaver.png" alt="Маскот бобр — фото Евгении Аршиновой" loading="lazy" decoding="async" width="240" height="240">
+              <span class="avatar-fallback" aria-hidden="true">ЕА</span>
+            </div>
+            <h3 class="card-title member-name">Евгения Аршинова</h3>
+            <p class="card-text member-role">Очистка и подготовка данных, статистический анализ.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 team-card">
+          <div class="card-body">
+            <div class="avatar-wrap">
+              <img src="mascots/unicorn.png" class="avatar-zoom" alt="Маскот единорог — фото Марка Мухарамова" loading="lazy" decoding="async" width="240" height="240">
+              <span class="avatar-fallback" aria-hidden="true">ММ</span>
+            </div>
+            <h3 class="card-title member-name">Марк Мухарамов</h3>
+            <p class="card-text member-role">Анализ данных, построение графиков и визуализаций, ревью сайта.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container circuit-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 70" preserveAspectRatio="none" focusable="false">
+      <path d="M24 24 H1040 Q1100 24 1100 70" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <circle cx="24" cy="24" r="8" fill="#FFDD2D" stroke="#333333" stroke-width="3"/>
+    </svg>
+  </div>
+
+  <section class="container pb-5" id="tools" aria-labelledby="tools-title">
+    <div class="tools-panel">
+      <h2 id="tools-title" class="title-plaque">Инструменты и источники</h2>
+      <div class="title-marker mt-3 mb-3" aria-hidden="true"></div>
+      <p>В ходе работы над проектом мы использовали большое количество библиотек, программ и сайтов для создания продуманных гипотез и самого точного анализа.</p>
+      <ul class="chip-list">
+        <li class="chip"><strong>Python</strong> — язык программирования</li>
+        <li class="chip"><strong>Pandas</strong> — работа с таблицами</li>
+        <li class="chip"><strong>statsmodels</strong> — статистика</li>
+        <li class="chip"><strong>seaborn</strong> — создание графиков</li>
+        <li class="chip"><strong>numpy</strong> — работа с числами</li>
+        <li class="chip"><strong>matplotlib</strong> — создание графиков</li>
+        <li class="chip"><strong>MVP программы Марка</strong> — общая работа с данными</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="mt-5">
+  <div class="container">
+    <div class="hack-line" aria-label="HACK IT ON">
+      <span class="hack-text">HACK IT!</span>
+      <span class="hack-on">
+        <button class="hack-toggle is-on" id="hackToggle" type="button" aria-pressed="true" aria-label="Тумблер: HACK IT включён"><span class="hack-knob" aria-hidden="true"></span></button>
+        <span class="hack-text" id="hackState">N</span>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Fallback аватарок без inline onerror — не блокируется CSP script-src.
+  document.querySelectorAll('.avatar-wrap img').forEach(function (img) {
+    var showFallback = function () {
+      img.classList.add('is-broken');
+      var wrap = img.closest('.avatar-wrap');
+      if (wrap) wrap.classList.add('is-broken');
+    };
+    img.addEventListener('error', showFallback);
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) showFallback();
+  });
+  var ht = document.getElementById('hackToggle');
+  var hs = document.getElementById('hackState');
+  var hl = document.querySelector('.hack-line');
+  if (ht) {
+    ht.addEventListener('click', function () {
+      var on = ht.classList.toggle('is-on');
+      ht.setAttribute('aria-pressed', on ? 'true' : 'false');
+      ht.setAttribute('aria-label', on ? 'Тумблер: HACK IT включён' : 'Тумблер: HACK IT выключён');
+      if (hs) hs.textContent = on ? 'N' : 'FF';
+      if (hl) hl.setAttribute('aria-label', on ? 'HACK IT ON' : 'HACK IT OFF');
+    });
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Мобильное меню: закрывать после тапа по ссылке, иначе перекрывает контент.
+  var navCollapse = document.getElementById('navbarNav');
+  if (navCollapse) {
+    navCollapse.querySelectorAll('.nav-link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (window.getComputedStyle(document.querySelector('.navbar-toggler')).display !== 'none' &&
+            window.bootstrap && window.bootstrap.Collapse) {
+          var instance = window.bootstrap.Collapse.getInstance(navCollapse);
+          if (instance) instance.hide();
+        }
+      });
+    });
+  }
+  // 3D-tilt только для мыши: на таче дергает скролл и жрет батарею.
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.team-card').forEach(function (card) {
+    var raf = null;
+    card.addEventListener('mousemove', function (e) {
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () {
+        card.style.transform = 'perspective(700px) rotateX(' + (-py * 10).toFixed(2) + 'deg) rotateY(' + (px * 12).toFixed(2) + 'deg) translateY(-4px)';
+      });
+    });
+    card.addEventListener('mouseleave', function () {
+      if (raf) cancelAnimationFrame(raf);
+      card.style.transform = '';
+    });
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
